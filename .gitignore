@@ -368,3 +368,11 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /TarkovReferences
+
+# Jetbrains stuff
+.idea
+.run
+*.sln.iml
+*.ipr
+*.iws
+
