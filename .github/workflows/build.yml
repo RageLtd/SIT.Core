@@ -14,12 +14,13 @@ jobs:
     name: .NET on ${{ matrix.runs-on }} (${{ matrix.configuration }})
     runs-on: ${{ matrix.runs-on }}
     strategy:
-      fail-fast: false
       matrix:
         runs-on: [windows-latest]
-        configuration: [Release,Debug]
+        configuration: [Release, Debug]
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         id: setup-dotnet
@@ -34,11 +35,11 @@ jobs:
 
       - name: Build
         id: build
-        run: dotnet build --no-restore -c ${{ matrix.configuration }}
+        run: dotnet build --no-restore -c ${{ matrix.configuration }} -r win-x64 ${{ github.workspace }}\SIT.Launcher\SIT.Launcher.csproj
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: Rage-SIT-Build-${{ matrix.configuration }}
-          path: ${{ github.workspace }}\Source\bin\${{ matrix.configuration }}\
+          path: ${{ github.workspace }}\SIT.Launcher\bin\${{ matrix.configuration }}\win-x64\publish
           if-no-files-found: error
