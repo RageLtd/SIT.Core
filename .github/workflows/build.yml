@@ -41,5 +41,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Rage-SIT-Build-${{ matrix.configuration }}
-          path: ${{ github.workspace }}\Source\bin\${{ matrix.configuration }}\win-x64
+          path: ${{ github.workspace }}\Source\bin\${{ matrix.configuration }}
           if-no-files-found: error
