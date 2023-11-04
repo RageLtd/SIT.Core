@@ -1,0 +1,79 @@
+name: Publish
+on:
+  push:
+    branches:  [ master ]
+
+env:
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+jobs:
+  release:
+    name: .NET on ${{ matrix.runs-on }} (${{ matrix.configuration }})
+    runs-on: ${{ matrix.runs-on }}
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
+      changelog: ${{ steps.tag_version.outputs.changelog }}
+    strategy:
+      fail-fast: true
+      matrix:
+        runs-on: [ windows-latest ]
+        configuration: [ Release ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          cache: true
+          dotnet-version: 7.x
+          cache-dependency-path: "**/packages.lock.json"
+
+      - name: Restore dependencies
+        run: dotnet restore --locked-mode
+        
+      - name: Bump version
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true
+          release_branches: master
+
+      - name: Build
+        id: build
+        run: dotnet publish --no-restore -c Release -r win-x64 -p:Version=${{ steps.tag_version.outputs.new_tag }} ${{ github.workspace }}\Source\SIT.Core.csproj
+        
+      - name: Package
+        # zip up assets
+        run: 7z a Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}.zip ${{ github.workspace }}\Source\bin\${{ matrix.configuration }}\win-x64\publish\* -r -tzip
+        
+      - name: Upload Package for Publishing
+        uses: actions/upload-artifact@v3
+        with:
+          name: Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}
+          path: Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}.zip
+          if-no-files-found: error
+          
+  publish:
+    needs: release
+    name: Publish
+    runs-on: windows-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Rage-SIT.Core-${{ needs.release.outputs.new_tag }}
+          
+      - name: Publish to Github Releases
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.release.outputs.new_tag }}
+          artifacts: ${{ github.workspace }}\Rage-SIT.Core-${{ needs.release.outputs.new_tag }}.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ needs.release.outputs.new_tag }}
+          body: ${{ needs.release.outputs.changelog }}
+          prerelease: false
+          draft: false
+          allowUpdates: true

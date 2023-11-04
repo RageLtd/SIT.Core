@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net472</TargetFramework>
+	  <TargetFramework>net472</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <AssemblyName>SIT.Core</AssemblyName>
     <Description>Stay in Tarkov plugin for Escape From Tarkov</Description>
     <Version>1.0.0</Version>
@@ -9,7 +10,22 @@
     <LangVersion>latest</LangVersion>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <Deterministic>false</Deterministic>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <OutputPath>.\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
+  
+  <Choose>
+    <When Condition="'$(Configuration)' == 'Release'">
+      <PropertyGroup>
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>none</DebugType>
+        <Optimize>true</Optimize>
+        <DefineConstants>TRACE</DefineConstants>
+      </PropertyGroup>
+    </When>
+  </Choose>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Language\English.json">
