@@ -45,15 +45,13 @@ jobs:
         id: build
         run: dotnet publish --no-restore -c Release -r win-x64 -p:Version=${{ steps.tag_version.outputs.new_tag }} ${{ github.workspace }}\Source\SIT.Core.csproj
         
-      - name: Package
-        # zip up assets
-        run: 7z a Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}.zip ${{ github.workspace }}\Source\bin\${{ matrix.configuration }}\win-x64\publish\* -r -tzip
-        
-      - name: Upload Package for Publishing
+      - name: Upload Files for Publishing
         uses: actions/upload-artifact@v3
         with:
           name: Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}
-          path: Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}.zip
+          path: |
+            ${{ github.workspace }}\Source\bin\Release\win-x64\publish\SIT.Core.dll
+            ${{ github.workspace }}\Source\bin\Release\win-x64\publish\Assembly-CSharp.dll
           if-no-files-found: error
           
   publish:
@@ -70,7 +68,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ needs.release.outputs.new_tag }}
-          artifacts: ${{ github.workspace }}\Rage-SIT.Core-${{ needs.release.outputs.new_tag }}.zip
+          artifacts: "${{ github.workspace }}/SIT.Core.dll, ${{ github.workspace }}/Assembly-CSharp.dll"
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ needs.release.outputs.new_tag }}
           body: ${{ needs.release.outputs.changelog }}
