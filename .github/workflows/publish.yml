@@ -43,11 +43,11 @@ jobs:
 
       - name: Build
         id: build
-        run: dotnet publish --no-restore -c Release -r win-x64 -p:Version=${{ steps.tag_version.outputs.new_tag }} ${{ github.workspace }}\SIT.Core\SIT.Core.csproj
+        run: dotnet publish --no-restore -c Release -r win-x64 -p:Version=${{ steps.tag_version.outputs.new_tag }} ${{ github.workspace }}\Source\SIT.Core.csproj
         
       - name: Package
         # zip up assets
-        run: 7z a Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}.zip ${{ github.workspace }}\SIT.Core\bin\${{ matrix.configuration }}\win-x64\publish\* -r -tzip
+        run: 7z a Rage-SIT.Core-${{ steps.tag_version.outputs.new_tag }}.zip ${{ github.workspace }}\Source\bin\${{ matrix.configuration }}\win-x64\publish\* -r -tzip
         
       - name: Upload Package for Publishing
         uses: actions/upload-artifact@v3

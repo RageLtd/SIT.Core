@@ -35,11 +35,11 @@ jobs:
 
       - name: Build
         id: build
-        run: dotnet build --no-restore -c ${{ matrix.configuration }} -r win-x64 ${{ github.workspace }}\SIT.Launcher\SIT.Launcher.csproj
+        run: dotnet build --no-restore -c ${{ matrix.configuration }} -r win-x64 ${{ github.workspace }}\Source\SIT.Core.csproj
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: Rage-SIT-Build-${{ matrix.configuration }}
-          path: ${{ github.workspace }}\SIT.Launcher\bin\${{ matrix.configuration }}\win-x64\publish
+          path: ${{ github.workspace }}\Source\bin\${{ matrix.configuration }}\win-x64\publish
           if-no-files-found: error
