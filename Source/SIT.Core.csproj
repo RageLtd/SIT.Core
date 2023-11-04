@@ -13,6 +13,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <OutputPath>.\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
   
   <Choose>
@@ -22,7 +23,6 @@
         <DebugType>none</DebugType>
         <Optimize>true</Optimize>
         <DefineConstants>TRACE</DefineConstants>
-        <OutputPath>.\bin\Release</OutputPath>
       </PropertyGroup>
     </When>
   </Choose>
