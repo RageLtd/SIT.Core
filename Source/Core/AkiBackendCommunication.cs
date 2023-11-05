@@ -139,12 +139,10 @@ namespace SIT.Core.Core
             Logger.LogDebug(PatchConstants.GetREALWSURL());
             Logger.LogDebug(wsUrl);
 
-            WebSocketPreviousReceived = [];
-            WebSocket = new WebSocketSharp.WebSocket(wsUrl)
-            {
-                WaitTime = TimeSpan.FromMinutes(1),
-                EmitOnPing = true
-            };
+            WebSocketPreviousReceived = new HashSet<string>();
+            WebSocket = new WebSocketSharp.WebSocket(wsUrl);
+            WebSocket.WaitTime = TimeSpan.FromMinutes(1);
+            WebSocket.EmitOnPing = true;    
             WebSocket.Connect();
             WebSocket.Send("CONNECTED FROM SIT COOP");
             // ---
@@ -525,12 +523,12 @@ namespace SIT.Core.Core
         public static bool DEBUGPACKETS { get; } = false;
 
         public bool HighPingMode { get; set; }
-        public BlockingCollection<string> PooledJsonToPost { get; } = [];
-        public BlockingCollection<byte[]> PooledBytesToPost { get; } = [];
-        public BlockingCollection<KeyValuePair<string, Dictionary<string, object>>> PooledDictionariesToPost { get; } = [];
-        public BlockingCollection<List<Dictionary<string, object>>> PooledDictionaryCollectionToPost { get; } = [];
+        public BlockingCollection<string> PooledJsonToPost { get; } = new();
+        public BlockingCollection<byte[]> PooledBytesToPost { get; } = new();
+        public BlockingCollection<KeyValuePair<string, Dictionary<string, object>>> PooledDictionariesToPost { get; } = new();
+        public BlockingCollection<List<Dictionary<string, object>>> PooledDictionaryCollectionToPost { get; } = new();
 
-        public BlockingCollection<KeyValuePair<string, string>> PooledJsonToPostToUrl { get; } = [];
+        public BlockingCollection<KeyValuePair<string, string>> PooledJsonToPostToUrl { get; } = new();
 
         public void SendDataToPool(string url, string serializedData)
         {
