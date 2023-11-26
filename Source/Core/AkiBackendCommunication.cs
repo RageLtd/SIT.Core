@@ -133,16 +133,14 @@ namespace SIT.Core.Core
 
             Logger.LogDebug("Request Instance is connecting to WebSocket");
 
-            var webSocketPort = PluginConfigSettings.Instance.CoopSettings.SITWebSocketPort;
-            var wsUrl = $"{PatchConstants.GetREALWSURL()}:{webSocketPort}/{profile.ProfileId}?";
-            Logger.LogDebug(webSocketPort);
+            var wsUrl = $"{PatchConstants.GetREALWSURL()}/{profile.ProfileId}?";
             Logger.LogDebug(PatchConstants.GetREALWSURL());
             Logger.LogDebug(wsUrl);
 
             WebSocketPreviousReceived = new HashSet<string>();
             WebSocket = new WebSocketSharp.WebSocket(wsUrl);
             WebSocket.WaitTime = TimeSpan.FromMinutes(1);
-            WebSocket.EmitOnPing = true;    
+            WebSocket.EmitOnPing = true;
             WebSocket.Connect();
             WebSocket.Send("CONNECTED FROM SIT COOP");
             // ---

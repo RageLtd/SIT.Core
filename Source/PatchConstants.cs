@@ -97,14 +97,12 @@ namespace SIT.Tarkov.Core
         {
             if (string.IsNullOrEmpty(RealWSURL))
             {
-                RealWSURL = BackendConnection.GetBackendConnection().BackendUrl;
-                int colonIndex = RealWSURL.LastIndexOf(':');
-                if (colonIndex != -1)
-                {
-                    RealWSURL = RealWSURL.Substring(0, colonIndex);
-                }
+                Logger.LogDebug("RealWSURL is null or empty");
+                Logger.LogDebug("BackendConnection.GetBackendConnection().WebsocketUrl: " + BackendConnection.GetBackendConnection().WebsocketUrl);
+                RealWSURL = BackendConnection.GetBackendConnection().WebsocketUrl;
                 RealWSURL = RealWSURL.Replace("http", "ws");
             }
+            Logger.LogDebug("RealWSURL: " + RealWSURL);
             return RealWSURL;
         }
         public static string GetPHPSESSID()
